@@ -1,0 +1,8 @@
+db/*
+backup/*
+logs/*
+**.egg-info
+**.sqlite
+venv*
+__pycache__/ 
+build**

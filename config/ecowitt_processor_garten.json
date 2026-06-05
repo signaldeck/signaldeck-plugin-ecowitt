@@ -1,0 +1,79 @@
+[
+    {
+            "name": "chart_temperature_garten",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_temperature_garten"
+                    }
+                ],
+                "title": "Temperatur Garten",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "°C",
+                "y-range": {
+                    "min": 10,
+                    "max": 35
+                }
+            }
+        },
+                {
+            "name": "chart_humidity_garten",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_humidity_garten"
+                    }
+                ],
+                "title": "Luftfeuchtigkeit Garten",
+                "withCurrent": true,
+                "unit": "%",
+                "y-range": {
+                    "min": 40,
+                    "max": 100
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_garten",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_garten"
+                    }
+                ],
+                "title": "Taupunkt Garten",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 5,
+                    "max": 20
+                }
+            }
+        },
+                {
+            "name": "chart_battery_kondensator_garten",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_battery_kondensator_garten"
+                    }
+                ],
+                "title": "Batterie Kondensator Garten",
+                "withCurrent": true,
+                "unit": "V",
+                "y-range": {
+                    "min": 0,
+                    "max": 6
+                }
+            }
+        }
+]

@@ -1,0 +1,31 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+    },
+
+    "handlers": {
+
+
+        "console_handler": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "simple"
+        }
+    },
+    "loggers": {
+        "": {
+        "level": "INFO"
+        },
+      "logger":{
+        "level":"DEBUG"
+      }
+},
+    "root": {
+        "level": "DEBUG",
+        "handlers": ["console_handler"]
+    }
+}

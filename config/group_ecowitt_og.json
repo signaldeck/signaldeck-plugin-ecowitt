@@ -1,0 +1,75 @@
+[
+    {
+        "name": "Ecowitt",
+        "element": "EcowittControl",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "sleeping_room"
+        ]
+    },{
+        "name": "Ecowitt2",
+        "element": "EcowittControl2",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "bad_og"
+        ]
+    },
+    {
+        "name": "SleepingRoomTemp",
+        "element": "Schlafzimmer Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_temperature_sleeping_room",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "SleepingRoomHumidity",
+        "element": "Schlafzimmer Luftfeuchtigkeit",
+        "fa": "fas fa-sync",
+        "type": "chart_humidity_sleeping_room",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "SleepingRoomDewpoint",
+        "element": "Schlafzimmer Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_sleeping_room",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "BadOgTemp",
+        "element": "Bad OG Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_temperature_bad_og",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "BadOgHumidity",
+        "element": "Bad OG Luftfeuchtigkeit",
+        "fa": "fas fa-sync",
+        "type": "chart_humidity_bad_og",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "BadOgDewpoint",
+        "element": "Bad OG Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_bad_og",
+        "value": [
+            "todayaa"
+        ]
+    }
+
+    
+]

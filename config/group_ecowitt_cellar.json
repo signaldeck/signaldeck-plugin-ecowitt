@@ -1,0 +1,75 @@
+[
+       {
+        "name": "Ecowitt",
+        "element": "EcowittControl2",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "vorratsraum"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl3",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "waschraum"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl4",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "hobbyraum"
+        ]
+    },
+    {
+        "name": "VorratsraumTemp",
+        "element": "Vorratsraum Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_temperature_vorratsraum",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "VorratsraumHumidity",
+        "element": "Vorratsraum Luftfeuchtigkeit",
+        "fa": "fas fa-sync",
+        "type": "chart_humidity_vorratsraum",
+        "value": [
+            "todayaa"
+        ]
+    }
+    ,
+    {
+        "name": "VorratsraumDewpoint",
+        "element": "Vorratsraum Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_vorratsraum",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "WaschraumDewpoint",
+        "element": "Waschraum Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_waschraum",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "HobbyraumDewpoint",
+        "element": "Hobbyraum Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_hobbyraum",
+        "value": [
+            "todayaa"
+        ]
+    }
+
+    
+]

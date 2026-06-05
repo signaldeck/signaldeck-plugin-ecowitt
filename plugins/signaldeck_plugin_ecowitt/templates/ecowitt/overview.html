@@ -1,0 +1,22 @@
+{% from "ui/_utils.html" import renderButton, renderStateDiv, renderInputField %}
+
+
+<div class="state-container">
+    {{ renderStateDiv(displayData) }}
+    <div>Übersicht</div>
+    {{ renderButton("mode_temperature",displayData) }} {{ renderButton("mode_humidity",displayData) }} {{ renderButton("mode_dewpoint",displayData) }} {{ renderButton("mode_last_seen",displayData) }}
+    <div class="state-row">
+        <div class="state-label">{{ displayData.processor_outdoor["display_name"] }}</div>
+        <div class="state-value">
+            {{ displayData.getFieldValue(displayData.processor_outdoor, displayData.getFieldForMode()) }}
+        </div>
+    </div>
+    {% for processor in displayData.processors_indoor %}
+    <div class="state-row">
+        <div class="state-label">{{ processor["display_name"] }}</div>
+        <div class="state-value">
+            {{ displayData.getFieldValue(processor, displayData.getFieldForMode()) }}
+        </div>
+    </div>
+    {% endfor %}
+</div>

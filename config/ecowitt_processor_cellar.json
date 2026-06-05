@@ -1,0 +1,98 @@
+[
+    {
+            "name": "chart_temperature_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_temperature_vorratsraum"
+                    }
+                ],
+                "title": "Temperatur Keller",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "°C",
+                "y-range": {
+                    "min": 15,
+                    "max": 25
+                }
+            }
+        },
+                {
+            "name": "chart_humidity_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_humidity_vorratsraum"
+                    }
+                ],
+                "title": "Luftfeuchtigkeit Keller",
+                "withCurrent": true,
+                "unit": "%",
+                "y-range": {
+                    "min": 60,
+                    "max": 72
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_vorratsraum"
+                    }
+                ],
+                "title": "Taupunkt Keller",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_hobbyraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_hobbyraum"
+                    }
+                ],
+                "title": "Taupunkt Hobbyraum",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_waschraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_waschraum"
+                    }
+                ],
+                "title": "Taupunkt Waschraum",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        }
+]

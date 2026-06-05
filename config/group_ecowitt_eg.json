@@ -1,0 +1,55 @@
+[
+    {
+        "name": "Übersicht",
+        "element": "Übersicht",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "overview"
+        ]
+    },
+    {
+        "name": "Garten",
+        "element": "Garten",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "garten"
+        ]
+    },{
+        "name": "Gateway",
+        "element": "Gateway",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "gateway"
+        ]
+    },{
+        "name": "Wohnzimmer",
+        "element": "Wohnzimmer",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "wohnzimmer"
+        ]
+    },
+    {
+        "name": "Übersicht Temperatur",
+        "element": "Übersicht Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_ecowitt",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "GartenBatterieKondensator",
+        "element": "Garten Batterie Kondensator",
+        "fa": "fas fa-sync",
+        "type": "chart_battery_kondensator_garten",
+        "value": [
+            "todayaa"
+        ]
+    }
+
+]

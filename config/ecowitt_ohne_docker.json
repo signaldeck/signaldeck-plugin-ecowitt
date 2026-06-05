@@ -1,0 +1,49 @@
+{   "page_title": "Ecowitt",
+    "i18n": {
+        "lang": "de",
+        "lang_fallback": "en"
+    },
+    "data_stores":[
+        {
+            "name": "sqlite_2",
+            "class": "signaldeck_plugin_sqlite.persistence.sqlite_store.SqliteStore",
+            "config": {
+                "url": "sqlite:///db/data_2.db"
+            }
+        },
+        {
+            "name": "sqlite_strom",
+            "class": "signaldeck_plugin_sqlite.persistence.sqlite_store.SqliteStore",
+            "config": {
+                "url": "sqlite:///db/data_strom.db",
+                "backup_name": "backup_strom.sqlite"
+            }
+        }
+    ],
+    "processors": [
+        { "include": "config/ecowitt_processor.json" },
+        { "include": "config/ecowitt_processor_cellar.json" },
+        { "include": "config/ecowitt_processor_garten.json" }
+    ],
+    "groups": [
+        {
+            "name": "EG",
+            "data": "config/group_ecowitt_eg.json"
+        },
+        {
+            "name": "OG",
+            "data": "config/group_ecowitt_og.json",
+            "path": "OG"
+        },
+        {
+            "name": "Keller",
+            "data": "config/group_ecowitt_cellar.json",
+            "path": "Keller"
+        }
+
+    ],
+    "cmd":{
+        "alias":[],
+        "script":[]    
+    }
+}

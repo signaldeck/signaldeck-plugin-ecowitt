@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signaldeck-plugin-ecowitt"
+version = "0.1.0"
+description = "Ecowitt plugin"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "signaldeck-ui @ git+https://github.com/signaldeck/signaldeck-ui.git@main",
+  "signaldeck-sdk @ git+https://github.com/signaldeck/signaldeck-sdk.git@main",
+  "flask>=3.0",
+  "requests>=2.32.3"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["plugins/."]
+include = ["ecowitt*"]
+
+[tool.setuptools.package-data]
+signaldeck_plugin_hello_world = [
+  "templates/**/*","static/**/*", "locales/**/*"
+]
+
+

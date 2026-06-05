@@ -1,0 +1,430 @@
+{   "page_title": "Ecowitt",
+    "data_stores":[
+        {
+            "name": "sqlite",
+            "class": "signaldeck_plugin_sqlite.persistence.sqlite_store.SqliteStore",
+            "config": {
+                "url": "sqlite:////app/db/data.db"
+            }
+        }
+    ],
+    "processors": [
+        { "include": "config/ecowitt_processor.json" },
+        {
+            "name": "ecowitt",
+            "cacheSize": 100,
+            "class": "signaldeck_plugin_ecowitt.processor.EcowittProcessor",
+            "config": {
+                "sensors": [
+                    {
+                        "name": "sleeping_room",
+                        "display_name": "Schlafzimmer",
+                        "type": "WN31",
+                        "channel": 2
+                    },{
+                        "name": "vorratsraum",
+                        "display_name": "Vorratsraum",
+                        "type": "WN31",
+                        "channel": 1
+                    },{
+                        "name": "waschraum",
+                        "display_name": "Waschraum",
+                        "type": "WN31",
+                        "channel": 3
+                    },{
+                        "name": "hobbyraum",
+                        "display_name": "Hobbyraum",
+                        "type": "WN31",
+                        "channel": 4
+                    },{
+                        "name": "wohnzimmer",
+                        "display_name": "Wohnzimmer",
+                        "type": "WN31",
+                        "channel": 5
+                    }],
+                    "export": {
+
+                    
+                        "http": [
+                        {
+                            "name": "temperature",
+                            "values": {
+         
+                            }
+                        }
+                    ],
+                    "methods": [
+                        {
+                            "name": "hist_temperature_sleeping_room",
+                            "target_function": "hist",
+                            "args": [
+                                "sleeping_room_temperature_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_temperature_vorratsraum",
+                            "target_function": "hist",
+                            "args": [
+                                "vorratsraum_temperature_c"
+                            ]
+                        },{
+                            "name": "hist_temperature_waschraum",
+                            "target_function": "hist",
+                            "args": [
+                                "waschraum_temperature_c"
+                            ]
+                        },{
+                            "name": "hist_temperature_hobbyraum",
+                            "target_function": "hist",
+                            "args": [
+                                "hobbyraum_temperature_c"
+                            ]
+                        },{
+                            "name": "hist_temperature_wohnzimmer",
+                            "target_function": "hist",
+                            "args": [
+                                "wohnzimmer_temperature_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_humidity_sleeping_room",
+                            "target_function": "hist",
+                            "args": [
+                                "sleeping_room_humidity"
+                            ]
+                        },{
+                            "name": "hist_humidity_bad_og",
+                            "target_function": "hist",
+                            "args": [
+                                "bad_og_humidity"
+                            ]
+                        },
+                        {
+                            "name": "hist_humidity_vorratsraum",
+                            "target_function": "hist",
+                            "args": [
+                                "vorratsraum_humidity"
+                            ]
+                        },
+                        {
+                            "name": "hist_humidity_waschraum",
+                            "target_function": "hist",
+                            "args": [
+                                "waschraum_humidity"
+                            ]
+                        },
+                        {
+                            "name": "hist_humidity_hobbyraum",
+                            "target_function": "hist",
+                            "args": [
+                                "hobbyraum_humidity"
+                            ]
+                        },
+                        {
+                            "name": "hist_humidity_wohnzimmer",
+                            "target_function": "hist",
+                            "args": [
+                                "wohnzimmer_humidity"
+                            ]
+                        },
+                        {
+                            "name": "hist_dewpoint_sleeping_room",
+                            "target_function": "hist",
+                            "args": [
+                                "sleeping_room_dewpoint_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_dewpoint_vorratsraum",
+                            "target_function": "hist",
+                            "args": [
+                                "vorratsraum_dewpoint_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_dewpoint_waschraum",
+                            "target_function": "hist",
+                            "args": [
+                                "waschraum_dewpoint_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_dewpoint_hobbyraum",
+                            "target_function": "hist",
+                            "args": [
+                                "hobbyraum_dewpoint_c"
+                            ]
+                        },
+                        {
+                            "name": "hist_dewpoint_wohnzimmer",
+                            "target_function": "hist",
+                            "args": [
+                                "wohnzimmer_dewpoint_c"
+                            ]
+                        }
+                    ]
+                    },
+                 "persist": [
+                    {
+                        "type": "sqlite",
+                        "name": "pvlogger",
+                        "date_field": "date",
+                        "minInterval": {
+                            "unit": "seconds",
+                            "value": 600
+                        },
+                        "fields": [
+                            {
+                                "name": "date",
+                                "dtype": "date",
+                                "display_name": "Datum"
+                            }, {
+                                "name": "sleeping_room_temperature_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Temperatur [°C]"
+                            }, {
+                                "name": "vorratsraum_temperature_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Temperatur [°C]"
+                            }, {
+                                "name": "waschraum_temperature_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Temperatur [°C]"
+                            }, {
+                                "name": "hobbyraum_temperature_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Temperatur [°C]"
+                            }, {
+                                "name": "wohnzimmer_temperature_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Temperatur [°C]"
+                            }, {
+                                "name": "sleeping_room_humidity",
+                                "dtype": "float",
+                                "unit": "%",
+                                "display_name": "Luftfeuchtigkeit [%]"
+                            }, {
+                                "name": "vorratsraum_humidity",
+                                "dtype": "float",
+                                "unit": "%",
+                                "display_name": "Luftfeuchtigkeit [%]"
+                            }, {
+                                "name": "waschraum_humidity",
+                                "dtype": "float",
+                                "unit": "%",
+                                "display_name": "Luftfeuchtigkeit [%]"
+                            }, {
+                                "name": "hobbyraum_humidity",
+                                "dtype": "float",
+                                "unit": "%",
+                                "display_name": "Luftfeuchtigkeit [%]"
+                            }, {
+                                "name": "wohnzimmer_humidity",
+                                "dtype": "float",
+                                "unit": "%",
+                                "display_name": "Luftfeuchtigkeit [%]"
+                            }, {
+                                "name": "sleeping_room_dewpoint_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Taupunkt [°C]"
+                            }, {
+                                "name": "vorratsraum_dewpoint_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Taupunkt [°C]"
+                            }, {
+                                "name": "waschraum_dewpoint_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Taupunkt [°C]"
+                            }, {
+                                "name": "hobbyraum_dewpoint_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Taupunkt [°C]"
+                            }, {
+                                "name": "wohnzimmer_dewpoint_c",
+                                "dtype": "float",
+                                "unit": "°C",
+                                "display_name": "Taupunkt [°C]"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "name": "chart_temperature_sleeping_room",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_temperature_sleeping_room"
+                    }
+                ],
+                "title": "Temperatur Schlafzimmer",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "°C",
+                "y-range": {
+                    "min": 15,
+                    "max": 30
+                }
+            }
+        },
+        {
+            "name": "chart_temperature_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_temperature_vorratsraum"
+                    }
+                ],
+                "title": "Temperatur Keller",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "°C",
+                "y-range": {
+                    "min": 15,
+                    "max": 25
+                }
+            }
+        },
+        {
+            "name": "chart_humidity_sleeping_room",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_humidity_sleeping_room"
+                    }
+                ],
+                "title": "Luftfeuchtigkeit Schlafzimmer",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "%",
+                "y-range": {
+                    "min": 40,
+                    "max": 75
+                }
+            }
+        },
+        {
+            "name": "chart_humidity_bad_og",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_humidity_bad_og"
+                    }
+                ],
+                "title": "Luftfeuchtigkeit Bad OG",
+                "withCurrent": true,
+                "cacheSize": 100,
+                "unit": "%",
+                "y-range": {
+                    "min": 40,
+                    "max": 75
+                }
+            }
+        },
+                {
+            "name": "chart_humidity_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_humidity_vorratsraum"
+                    }
+                ],
+                "title": "Luftfeuchtigkeit Keller",
+                "withCurrent": true,
+                "unit": "%",
+                "y-range": {
+                    "min": 60,
+                    "max": 72
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_vorratsraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_vorratsraum"
+                    }
+                ],
+                "title": "Taupunkt Keller",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_hobbyraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_hobbyraum"
+                    }
+                ],
+                "title": "Taupunkt Hobbyraum",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        },
+                {
+            "name": "chart_dewpoint_waschraum",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_dewpoint_waschraum"
+                    }
+                ],
+                "title": "Taupunkt Waschraum",
+                "withCurrent": true,
+                "unit": "°C",
+                "y-range": {
+                    "min": 8,
+                    "max": 15
+                }
+            }
+        }
+    ],
+    "groups": [
+        {
+            "name": "Ecowitt UI",
+            "data": "/config/group_ecowitt.json"
+        }
+
+    ],
+    "cmd":{
+        "alias":[],
+        "script":[]    
+    }
+}

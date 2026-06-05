@@ -1,0 +1,291 @@
+[
+    {
+            "name": "mqtt_subscriber",
+            "class": "signaldeck_plugin_main.processors.mqtt.mqtt_subscriber.mqtt_subscriber",
+            "config": {
+                "host": "192.168.178.42",
+                "export": {
+                    "values": [
+                    ],
+                    "methods": [
+                        {
+                            "name": "hist_power_curr_alt",
+                            "target_function": "hist",
+                            "args": [
+                                "shellypro3em-strom/status/em:0",
+                                "total_power"
+                            ],
+                            "params": {
+                            }
+                        },
+                                                {
+                            "name": "hist_power_phase1",
+                            "target_function": "hist",
+                            "args": [
+                                "shellypro3em-strom/status/em:0",
+                                "power1"
+                            ],
+                            "params": {
+                            }
+                        },
+                                                {
+                            "name": "hist_power_phase2",
+                            "target_function": "hist",
+                            "args": [
+                                "shellypro3em-strom/status/em:0",
+                                "power2"
+                            ],
+                            "params": {
+                            }
+                        },
+                                                {
+                            "name": "hist_power_phase3",
+                            "target_function": "hist",
+                            "args": [
+                                "shellypro3em-strom/status/em:0",
+                                "power3"
+                            ],
+                            "params": {
+                            }
+                        },
+                        {
+                            "name": "hist_power_curr",
+                            "target_function": "hist",
+                            "args": [
+                                "tele/strom/SENSOR",
+                                "power"
+                            ],
+                            "params": {
+                            }
+                        },
+                        {
+                            "name": "hist_power_in",
+                            "target_function": "hist",
+                            "args": [
+                                "tele/strom/SENSOR",
+                                "total_in"
+                            ],
+                            "params": {
+                            }
+                        },
+                        {
+                            "name": "hist_power_out",
+                            "target_function": "hist",
+                            "args": [
+                                "tele/strom/SENSOR",
+                                "total_out"
+                            ],
+                            "params": {
+                            }
+                        }
+                    ],
+                    "http": [
+                        {
+                            "name": "strom",
+                            "values": {
+                                "energy-consumption-total": "power_in",
+                                "energy-production-total": "power_out",
+                                "power-total": "power_curr"
+                            }
+                        }
+                    ]
+                },
+                "topics": {
+                    "tele/strom/SENSOR": {
+                        "mapping": [
+                            {
+                                "name": "datum",
+                                "type": "date",
+                                "jsonPath": "now",
+                                "displayName": "Datum"
+                            },
+                            {
+                                "name": "total_in",
+                                "jsonPath": "$..Total_in",
+                                "displayName": "Bezug [kWh]"
+                            },
+                            {
+                                "name": "total_out",
+                                "jsonPath": "$..Total_out",
+                                "displayName": "Einspeisung [kWh]"
+                            },
+                            {
+                                "name": "power",
+                                "jsonPath": "$..Power_curr",
+                                "displayName": "Aktuelle Leistung [W]"
+                            }
+                        ],
+                        "persist": [
+                            {
+                                "type": "sqlite_strom",
+                                "name": "Stromlogger1_sqlite",
+                                "date_field": "datum",
+                                "continous_data":{
+                                    "window_minute":  1
+                                },
+                                "minInterval": {
+                                    "unit": "seconds",
+                                    "value": 59
+                                },
+                                "fields": [
+                                    {
+                                        "name": "datum",
+                                        "dtype": "date",
+                                        "display_name": "Datum"
+                                    },
+                                    {
+                                        "name": "total_in",
+                                        "dtype": "float",
+                                        "unit": "kWh",
+                                        "display_name": "Bezug [kWh]"
+                                    },
+                                    {
+                                        "name": "total_out",
+                                        "dtype": "float",
+                                        "unit": "kWh",
+                                        "display_name": "Einspeisung [kWh]"
+                                    },
+                                    {
+                                        "name": "power",
+                                        "dtype": "float",
+                                        "unit": "W",
+                                        "display_name": "Aktuelle Leistung [W]"
+                                    }
+                                ]
+                            }
+                        ],
+                        "cacheSize": 5000,
+                        "render_state": "strom_state.html"
+                    },
+                    "shellypro3em-strom/status/em:0": {
+                        "mapping": [
+                            {
+                                "name": "datum",
+                                "type": "date",
+                                "jsonPath": "now",
+                                "displayName": "Datum"
+                            },
+                            {
+                                "name": "power1",
+                                "jsonPath": "$.a_act_power",
+                                "displayName": "Leistung Phase 1 [W]"
+                            },
+                            {
+                                "name": "power2",
+                                "jsonPath": "$.b_act_power",
+                                "displayName": "Leistung Phase 2 [W]"
+                            },
+                            {
+                                "name": "power3",
+                                "jsonPath": "$.c_act_power",
+                                "displayName": "Leistung Phase 3 [W]"
+                            },
+                            {
+                                "name": "total_power",
+                                "jsonPath": "$.total_act_power",
+                                "displayName": "Gesamtleistung [W]"
+                            }
+                        ],
+                        "persist": [
+                            {
+                                "type": "sqlite_strom",
+                                "name": "Stromlogger2",
+                                "date_field": "datum",
+                                "continous_data":{
+                                    "window_minute":  1
+                                },
+                                "minInterval": {
+                                    "unit": "seconds",
+                                    "value": 10
+                                },
+                                "fields": [
+                                    {
+                                        "name": "datum",
+                                        "dtype": "date",
+                                        "display_name": "Datum"
+                                    },
+                                    {
+                                        "name": "power1",
+                                        "dtype": "float",
+                                        "unit": "W",
+                                        "display_name": "Power Phase 1 [W]"
+                                    },
+                                    {
+                                        "name": "power2",
+                                        "dtype": "float",
+                                        "unit": "W",
+                                        "display_name": "Power Phase 2 [W]"
+                                    },
+                                    {
+                                        "name": "power3",
+                                        "dtype": "float",
+                                        "unit": "W",
+                                        "display_name": "Power Phase 3 [W]"
+                                    },
+                                    {
+                                        "name": "total_power",
+                                        "dtype": "float",
+                                        "unit": "W",
+                                        "display_name": "Total Power [W]"
+                                    }
+                                ]
+                            }
+                        ],
+                        "cacheSize": 2500,
+                        "render_state": "strom_state_shelly.html"
+                    }
+                }
+            }
+        },
+                {
+            "name": "chart_power_phase1",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_power_phase1"
+                    }
+                ],
+                "title": "Verbrauch",
+                "unit": "W",
+                "lastN": 200,
+                "lastNReduce": false,
+                "withCurrent": true
+            }
+        },
+                {
+            "name": "chart_power_phase2",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_power_phase2"
+                    }
+                ],
+                "title": "Verbrauch",
+                "unit": "W",
+                "lastN": 200,
+                "lastNReduce": false,
+                "withCurrent": true
+            }
+        },
+                {
+            "name": "chart_power_phase3",
+            "class": "signaldeck_plugin_main.processors.chart.chart_processor.Chart",
+            "config": {
+                "methods": [
+                    {
+                        "name": "hist_value",
+                        "from": "hist_power_phase3"
+                    }
+                ],
+                "title": "Verbrauch",
+                "unit": "W",
+                "lastN": 200,
+                "lastNReduce": false,
+                "withCurrent": true
+            }
+        }
+    ]

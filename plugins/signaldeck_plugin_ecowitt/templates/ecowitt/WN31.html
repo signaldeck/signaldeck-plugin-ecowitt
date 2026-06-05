@@ -1,0 +1,15 @@
+{% from "ui/_utils.html" import renderButton, renderStateDiv, renderInputField %}
+
+
+<div class="state-container"> 
+    <div>{{ displayData.display_name }} (Ch: {{ displayData.channel }}, {{ displayData.getLastSeen() }})</div>
+{% for att in displayData.attrs %}
+<div class="state-row">
+    <div class="state-label">{{ displayData.getAttrDisplayName(att) }}</div>
+    <div class="state-value">
+     {{ displayData.getAttrValue(att) }}
+    </div>
+</div>
+
+{% endfor %}
+</div>

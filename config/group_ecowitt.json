@@ -1,0 +1,109 @@
+[
+    {
+        "name": "Ecowitt",
+        "element": "EcowittControl",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "sleeping_room"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl2",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "cellar"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl3",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "waschraum"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl4",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "hobbyraum"
+        ]
+    },    {
+        "name": "Ecowitt",
+        "element": "EcowittControl5",
+        "type": "ecowitt",
+        "fa": "fas fa-sync",
+        "value": [
+            "wohnzimmer"
+        ]
+    },
+    {
+        "name": "SleepingRoomTemp",
+        "element": "Schlafzimmer Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_temperature_sleeping_room",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "SleepingRoomHumidity",
+        "element": "Schlafzimmer Luftfeuchtigkeit",
+        "fa": "fas fa-sync",
+        "type": "chart_humidity_sleeping_room",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "CellarTemp",
+        "element": "Keller Temperatur",
+        "fa": "fas fa-sync",
+        "type": "chart_temperature_cellar",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "CellarHumidity",
+        "element": "Keller Luftfeuchtigkeit",
+        "fa": "fas fa-sync",
+        "type": "chart_humidity_cellar",
+        "value": [
+            "todayaa"
+        ]
+    }
+    ,
+    {
+        "name": "CellarDewpoint",
+        "element": "Keller Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_cellar",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "WaschraumDewpoint",
+        "element": "Waschraum Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_waschraum",
+        "value": [
+            "todayaa"
+        ]
+    },
+    {
+        "name": "HobbyraumDewpoint",
+        "element": "Hobbyraum Taupunkt",
+        "fa": "fas fa-sync",
+        "type": "chart_dewpoint_hobbyraum",
+        "value": [
+            "todayaa"
+        ]
+    }
+
+    
+]
