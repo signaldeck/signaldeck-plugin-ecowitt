@@ -28,7 +28,7 @@
     "groups": [
         {
             "name": "EG",
-            "data": "config/group_ecowitt_eg.json"
+            "data": "config/group_ecowitt_overview.json"
         },
         {
             "name": "OG",

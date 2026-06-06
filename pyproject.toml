@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "signaldeck-plugin-ecowitt"
-version = "0.1.0"
+version = "0.2.0"
 description = "Ecowitt plugin"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -20,7 +20,7 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["plugins/."]
-include = ["ecowitt*"]
+include = ["signaldeck_plugin_ecowitt*"]
 
 [tool.setuptools.package-data]
 signaldeck_plugin_hello_world = [
