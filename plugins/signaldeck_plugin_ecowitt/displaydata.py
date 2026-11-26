@@ -28,9 +28,7 @@ class EcowittDisplayData(DisplayData):
         return self
 
     def getAttrValue(self,attr):
-        if hasattr(self.processor, attr):
-            return getattr(self.processor, attr)
-        return None
+        return self.processor.getValue(attr)
     
     def getFieldValue(self,sensor,field):
         if field == "last_seen":
@@ -39,8 +37,7 @@ class EcowittDisplayData(DisplayData):
                 return val.strftime(self.date_format)
         if field in sensor.get("attr_name",{}):
             attr_name = sensor["attr_name"][field]
-            if hasattr(self.processor, attr_name):
-                return getattr(self.processor, attr_name)
+            return self.processor.getValue(attr_name)
         return None
     
 
