@@ -1,12 +1,8 @@
 import math
-
-from signaldeck_plugin_main.processors.dummy_data import data
+import json
+from signaldeck_plugin_main.processors.http.http_receiver import HttpReceiver
 from signaldeck_sdk import DisplayProcessor, DisplayData
-from typing import List, Tuple, Any 
 from .displaydata import EcowittDisplayData
-from signaldeck_sdk import PersistData
-import datetime, json
-from zoneinfo import ZoneInfo 
 
 SENSOR_TYPES = {
     "WN31": {
@@ -70,65 +66,100 @@ def dewpoint_celsius(temp_c: float, humidity: float) -> float:
 def fahrenheit_to_celsius(temp_f: float) -> float:
     return round((temp_f - 32.0) * 5.0 / 9.0,2)
 
-class EcowittProcessor(PersistData,DisplayProcessor):
+class EcowittProcessor(HttpReceiver, DisplayProcessor):
+    """Ecowitt sensor definitions and derived values on the shared HTTP input."""
 
-    def __init__(self,name,config,ctx,valueProvider,collect_data):
-        super().__init__(name,config,ctx,valueProvider,collect_data)
-        self.field_name_from_data = {}
-        self.int_fields = set()
-        self.float_fields = set()
-        self.calc_celsius_from_fahrenheit = {}
-        self.calc_mpa_from_inhg = {}
-        self.calc_inch_to_mm = {}
-        self.calc_dewpoint = {}
-        self.calc_mph_to_kmh = {}
+    def __init__(self, name, config, ctx, valueProvider, collect_data):
         self.sensors = {}
-        
-        for sensor in self.config.get("sensors",[]):
-            self.ctx.logger.info(f"Registering sensor: {sensor['name']} with type: {sensor['type']}")
-            self.sensors[sensor["name"]] = sensor
-            self.sensors[sensor["name"]]["attr_name"] = {}
-            self.sensors[sensor["name"]]["attr"] = []
-            self.sensors[sensor["name"]]["display_attrs"] = []
-            for sensor_name, sensor_field in SENSOR_TYPES.get(sensor["type"],[]).items():
-                sensor_field_name = sensor_name
-                sensor_attr_name = f"{sensor['name']}_{sensor_field_name}"
-                self.sensors[sensor["name"]]["attr_name"][sensor_field_name] = sensor_attr_name
-                self.sensors[sensor["name"]]["attr"].append((sensor_attr_name, sensor_field["display_name_key"]))
-                if sensor_field.get("show", True):
-                    self.sensors[sensor["name"]]["display_attrs"].append((sensor_attr_name, sensor_field["display_name_key"]))
-                self.ctx.logger.info(f"Registering sensor field: {sensor_field_name} for sensor: {sensor['name']}")
-                setattr(self, sensor_attr_name, None)
-                data_name = sensor_field["data_name"].format(ch=sensor.get("channel", 1))
-                self.field_name_from_data[data_name] = sensor_attr_name
-                if sensor_field["dtype"] == "int":
-                    self.int_fields.add(sensor_attr_name)
-                elif sensor_field["dtype"] == "float":
-                    self.float_fields.add(sensor_attr_name)
-                if "convert_from_fahrenheit" in sensor_field:
-                    dep_sensor_attr_name = f"{sensor['name']}_{sensor_field["convert_from_fahrenheit"]}"
-                    self.calc_celsius_from_fahrenheit[sensor_attr_name] = dep_sensor_attr_name
-                if "convert_from_inhg" in sensor_field:
-                    dep_sensor_attr_name = f"{sensor['name']}_{sensor_field["convert_from_inhg"]}"
-                    self.calc_mpa_from_inhg[sensor_attr_name] = dep_sensor_attr_name
-                if "convert_from_inch_to_mm" in sensor_field:
-                    dep_sensor_attr_name = f"{sensor['name']}_{sensor_field["convert_from_inch_to_mm"]}"
-                    self.calc_inch_to_mm[sensor_attr_name] = dep_sensor_attr_name
-                if "convert_from_mph_to_kmh" in sensor_field:
-                    dep_sensor_attr_name = f"{sensor['name']}_{sensor_field["convert_from_mph_to_kmh"]}"
-                    self.calc_mph_to_kmh[sensor_attr_name] = dep_sensor_attr_name
-                if "calc_dewpoint" in sensor_field:
-                    dep_sensor_attr_name1 = f"{sensor['name']}_{sensor_field["calc_dewpoint"][0]}"
-                    dep_sensor_attr_name2 = f"{sensor['name']}_{sensor_field["calc_dewpoint"][1]}"
-                    self.calc_dewpoint[sensor_attr_name] = (dep_sensor_attr_name1, dep_sensor_attr_name2)
-        self.ctx.logger.info(f"Field name from data mapping: {self.field_name_from_data}")  
-        self.ctx.logger.info(f"Sensors: {self.sensors}") 
-        self.ctx.logger.info(f"Calculated fields:")
-        self.ctx.logger.info(f"Celsius: {self.calc_celsius_from_fahrenheit}")
-        self.ctx.logger.info(f"MPa: {self.calc_mpa_from_inhg}")
-        self.ctx.logger.info(f"MPH to KMH: {self.calc_mph_to_kmh}")
-        self.ctx.logger.info(f"Inch to MM: {self.calc_inch_to_mm}")
-        self.ctx.logger.info(f"Dewpoint: {self.calc_dewpoint}")
+        self._sensor_fields = set()
+        self._latest_fields = {}
+        self._derived = []
+        # Ecowitt sends partial sensor reports and alternative units.
+        mapping = [dict(config.get("timestamp_mapping", {
+            "name": "date", "type": "date", "jsonPath": "now"
+        }))]
+        for sensor in config.get("sensors", []):
+            sensor_name = sensor["name"]
+            metadata = dict(sensor, attr_name={}, attr=[], display_attrs=[], last_update=None)
+            self.sensors[sensor_name] = metadata
+            for field, definition in SENSOR_TYPES[sensor["type"]].items():
+                target = f"{sensor_name}_{field}"
+                metadata["attr_name"][field] = target
+                entry = (target, definition["display_name_key"])
+                metadata["attr"].append(entry)
+                if definition.get("show", True):
+                    metadata["display_attrs"].append(entry)
+                self._sensor_fields.add(target)
+                self._latest_fields[target] = None
+                # Preserve the historical Ecowitt numeric representation (float).
+                source = definition["data_name"].format(ch=sensor.get("channel", 1))
+                mapping.append({
+                    "name": target, "type": "float",
+                    "jsonPath": "$." + source,
+                    "required": False, "ignore_invalid": True,
+                })
+                conversions = (
+                    ("convert_from_fahrenheit", fahrenheit_to_celsius),
+                    ("convert_from_inhg", lambda x: round(x * 33.8639, 2)),
+                    ("convert_from_inch_to_mm", lambda x: round(x * 25.4, 2)),
+                    ("convert_from_mph_to_kmh", lambda x: round(x * 1.60934, 2)),
+                )
+                for key, function in conversions:
+                    if key in definition:
+                        self._derived.append((target, (f"{sensor_name}_{definition[key]}",), function))
+                if "calc_dewpoint" in definition:
+                    deps = tuple(f"{sensor_name}_{d}" for d in definition["calc_dewpoint"])
+                    self._derived.append((target, deps, dewpoint_celsius))
+        config["mapping"] = mapping
+        for endpoint in config.get("export", {}).get("http", []):
+            endpoint.setdefault("allow_get", True)
+        super().__init__(name, config, ctx, valueProvider, collect_data)
+
+    def enrich_record(self, record):
+        # Conversions run before derived fields that depend on converted values.
+        for target, dependencies, function in self._derived:
+            if target not in record and all(dep in record for dep in dependencies):
+                try:
+                    value = function(*(record[dep] for dep in dependencies))
+                    if math.isfinite(value):
+                        record[target] = value
+                except (ValueError, ZeroDivisionError, OverflowError):
+                    self.logger.warning("Cannot calculate Ecowitt field %s", target)
+        return record
+
+    def validate_record(self, record):
+        return super().validate_record(record) and bool(self._sensor_fields.intersection(record))
+
+    def makeDataAvailable(self, config=None):
+        # Preserve last known values for individual sensors without copying stale
+        # fields into the new record or its persistence history.
+        for field in self._sensor_fields.intersection(self.currVal or {}):
+            value = self.currVal[field]
+            if value is not None:
+                self._latest_fields[field] = value
+
+    def getValue(self, fieldName):
+        with self._record_lock:
+            if fieldName in self._sensor_fields:
+                return self._latest_fields[fieldName]
+            return super().getValue(fieldName)
+
+    def on_record_saved(self, record):
+        for sensor in self.sensors.values():
+            if sensor["attr"] and sensor["attr"][0][0] in record:
+                sensor["last_update"] = record["date"]
+
+    def init_current_vals(self, config=None):
+        record = super().init_current_vals(config)
+        if record and record.get("date"):
+            self.on_record_saved(record)
+            cfg = self.config if config is None else config
+            for persist in cfg.get("persist", []):
+                store = self.dataStores[persist["type"]]
+                if not hasattr(store, "_last_action_time"):
+                    store._last_action_time = {}
+                store._last_action_time[json.dumps(persist)] = record["date"].timestamp()
+        return record
 
     def assureValueSingle(self, value):
         res = value
@@ -154,60 +185,3 @@ class EcowittProcessor(PersistData,DisplayProcessor):
             return "ecowitt/overview.html"
         return "ecowitt/ecowitt.html"
     
-    def init_current_vals(self,config=None):
-        super().init_current_vals(config)
-        for sensor in self.sensors.keys():
-            self.sensors[sensor]["last_update"] = self.currVal["date"]
-        if self.currVal["date"]:
-            if "persist" in self.config:
-                lastActionDict = {}
-                lastActionDict[json.dumps(self.config["persist"][0])] = self.currVal["date"].timestamp()
-                self.dataStores[self.config["persist"][0]["type"]]._last_action_time = lastActionDict
-    
-   
-    def processHTTPCall(self,**kwargs):
-        self.ctx.logger.debug(f"Processing HTTP call with data: {kwargs}")
-        data = {}
-        data["date"] = datetime.datetime.now(ZoneInfo(self.config.get("timezone","Europe/Berlin")))
-        for key, value in kwargs.items():
-            if key in self.field_name_from_data:
-                field_name = self.field_name_from_data[key]
-                try:
-                    value = float(value)
-                except ValueError:
-                    pass
-                data[field_name] = value
-                self.ctx.logger.info(f"Updated field {field_name} with value: {value}")
-        for field in self.calc_celsius_from_fahrenheit.keys():
-            if field not in data and self.calc_celsius_from_fahrenheit[field] in data:
-                data[field] = fahrenheit_to_celsius(data[self.calc_celsius_from_fahrenheit[field]])
-                self.ctx.logger.info(f"Calculated celsius field {field} with value: {data[field]} from fahrenheit field {self.calc_celsius_from_fahrenheit[field]} with value: {data[self.calc_celsius_from_fahrenheit[field]]}")
-        for field in self.calc_mpa_from_inhg.keys():
-            if field not in data and self.calc_mpa_from_inhg[field] in data:
-                data[field] = round(data[self.calc_mpa_from_inhg[field]] * 33.8639,2)
-                self.ctx.logger.info(f"Calculated mpa field {field} with value: {data[field]} from inhg field {self.calc_mpa_from_inhg[field]} with value: {data[self.calc_mpa_from_inhg[field]]}")
-        for field in self.calc_dewpoint.keys():
-            if field not in data and self.calc_dewpoint[field][0] in data and self.calc_dewpoint[field][1] in data:
-                data[field] = dewpoint_celsius(data[self.calc_dewpoint[field][0]], data[self.calc_dewpoint[field][1]])
-                self.ctx.logger.info(f"Calculated dewpoint field {field} with value: {data[field]} from temperature field {self.calc_dewpoint[field][0]} with value: {data[self.calc_dewpoint[field][0]]} and humidity field {self.calc_dewpoint[field][1]} with value: {data[self.calc_dewpoint[field][1]]}")
-        for field in self.calc_inch_to_mm.keys():
-            if field not in data and self.calc_inch_to_mm[field] in data:
-                data[field] = round(data[self.calc_inch_to_mm[field]] * 25.4,2)
-                self.ctx.logger.info(f"Calculated mm field {field} with value: {data[field]} from inch field {self.calc_inch_to_mm[field]} with value: {data[self.calc_inch_to_mm[field]]}")
-        for field in self.calc_mph_to_kmh.keys():
-            if field not in data and self.calc_mph_to_kmh[field] in data:
-                data[field] = round(data[self.calc_mph_to_kmh[field]] * 1.60934,2)
-                self.ctx.logger.info(f"Calculated kmh field {field} with value: {data[field]} from mph field {self.calc_mph_to_kmh[field]} with value: {data[self.calc_mph_to_kmh[field]]}")
-        if len(data) > 1:
-            # Only save if we have more than just the date
-            for sensor in self.sensors.keys():
-                if self.sensors[sensor]["attr"][0][0] in data.keys():
-                    self.sensors[sensor]["last_update"] = data["date"]
-            self.ctx.logger.info(f"Saving data: {data}")
-            self.save_data(data)
-            for k in data.keys():
-                if k == "date":
-                    continue
-                self.ctx.logger.info(f"Data saved successfully: {k} = {getattr(self, k)}")
-            
-        return {"status": "OK"}
